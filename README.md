@@ -4,6 +4,16 @@ Dashboard de soporte a la decisión que audita, limpia e integra los tres
 sistemas de TechLogistics S.A.S. (inventario, logística y feedback) y responde
 las 5 preguntas de alta gerencia con evidencia visual + recomendaciones de IA.
 
+**Integrantes del equipo:**
+
+| Nombre completo | Cédula         |
+| --------------- | -------------- |
+| Daniel Felipe Arango Guarín | 1018227831 |
+| Daniel Correa Botero | 1023624609 |
+| Miguel Ángel Cano Salinas | 1023522662 |
+
+## Enlace del Dashboard: https://datasciencechallenge2-nakcyclge3asonmnaojpg9.streamlit.app
+
 ## Estructura
 
 ```
