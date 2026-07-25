@@ -1,5 +1,7 @@
 """
-Aquí está el merge de los tres sistemas,
+eda.py — Integración, feature engineering y análisis de TechLogistics.
+
+Aquí vive la "Sola Fuente de Verdad": el merge de los tres sistemas,
 las variables derivadas y una función por cada una de las 5 preguntas
 de alta gerencia. main_app.py solo consume estas funciones y las grafica.
 """
@@ -102,13 +104,13 @@ def margen_por_canal(df: pd.DataFrame) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 def correlacion_entrega_nps(df: pd.DataFrame, por: str = "Ciudad_Destino") -> pd.DataFrame:
     """
-    Correlación (usamos Pearson) entre tiempo de entrega y NPS dentro de cada zona.
+    Correlación (Pearson) entre tiempo de entrega y NPS dentro de cada zona.
     Una correlación muy negativa = cada día extra de entrega castiga la lealtad.
     """
     base = df.dropna(subset=["Satisfaccion_NPS", "Tiempo_Entrega_Real"])
     filas = []
     for zona, grupo in base.groupby(por, observed=True):
-        if len(grupo) < 30:  # muestras pequeñas dan correlaciones poco confiables
+        if len(grupo) < 30:  # muestras chicas dan correlaciones poco confiables
             continue
         filas.append({
             por: zona,

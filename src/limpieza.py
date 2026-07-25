@@ -1,11 +1,14 @@
 """
+limpieza.py — Auditoría y limpieza de los datasets de TechLogistics S.A.S.
 
-Cada dataset tiene su propia función `limpiar` que devuelve el DataFrame
-limpio junto con un log de decisiones . La idea es que ninguna transformación quede sin rastro:
+Cada dataset tiene su propia función `limpiar_*` que devuelve el DataFrame
+limpio junto con un log de decisiones (qué se hizo, a cuántas filas afectó
+y por qué). La idea es que ninguna transformación quede sin rastro:
 el log alimenta el reporte de limpieza descargable desde la app.
 
 Criterios generales de imputación:
-- Mediana para variables numéricas con outliers o distribuciones sesgadas, porque la media se contamina con los extremos.
+- Mediana para variables numéricas con outliers o distribuciones sesgadas
+  (costos, stock, tiempos), porque la media se contamina con los extremos.
 - Moda / categoría explícita ("Desconocido") para variables categóricas,
   para no inventar información que no existe.
 """
