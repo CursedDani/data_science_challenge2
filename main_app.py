@@ -371,5 +371,5 @@ with tab_descargas:
         "resumen_calidad.txt", "text/plain")
 
 st.divider()
-st.caption("Challenge 02 · Fundamentos en Ciencia de Datos · EAFIT 2026-1 — "
+st.caption("Challenge 02 · Fundamentos en Ciencia de Datos · EAFIT 2026-2 — "
            "los datos sucios bien interpretados salvan empresas.")
