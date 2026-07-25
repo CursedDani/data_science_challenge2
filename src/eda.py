@@ -110,7 +110,7 @@ def correlacion_entrega_nps(df: pd.DataFrame, por: str = "Ciudad_Destino") -> pd
     base = df.dropna(subset=["Satisfaccion_NPS", "Tiempo_Entrega_Real"])
     filas = []
     for zona, grupo in base.groupby(por, observed=True):
-        if len(grupo) < 30:  # muestras chicas dan correlaciones poco confiables
+        if len(grupo) < 30: # porque las muestras pequeñas nos darían error
             continue
         filas.append({
             por: zona,
@@ -146,7 +146,6 @@ def impacto_ventas_fantasma(df: pd.DataFrame) -> dict:
 # Pregunta 4 — Paradoja de fidelidad: stock alto, sentimiento bajo
 # ---------------------------------------------------------------------------
 def paradoja_stock_sentimiento(df: pd.DataFrame) -> pd.DataFrame:
-    """Cruza disponibilidad promedio con rating y NPS por categoría."""
     base = df[~df["Es_SKU_Fantasma"]]
     tabla = (base.groupby("Categoria", as_index=False, observed=True)
              .agg(Stock_Promedio=("Stock_Actual", "mean"),
@@ -156,7 +155,6 @@ def paradoja_stock_sentimiento(df: pd.DataFrame) -> pd.DataFrame:
                   Precio_Promedio=("Precio_Venta_Final", "mean"),
                   Costo_Promedio=("Costo_Unitario_USD", "mean"),
                   Ventas=("Transaccion_ID", "count")))
-    # Marca la paradoja: stock sobre la mediana con NPS negativo
     tabla["Paradoja"] = ((tabla["Stock_Promedio"] > tabla["Stock_Promedio"].median())
                          & (tabla["NPS_Promedio"] < 0))
     return tabla.sort_values("NPS_Promedio")
