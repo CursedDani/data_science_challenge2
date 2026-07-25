@@ -44,7 +44,7 @@ def generar_recomendaciones(resumen_estadistico: str,
     """
     key = obtener_api_key(api_key)
     if not key:
-        return ("⚠️ No hay una API key de Groq configurada. Ingrésala en la "
+        return ("No hay una API key de Groq configurada. Ingrésala en la "
                 "barra lateral o define la variable de entorno GROQ_API_KEY. "
                 "Puedes crear una gratis en https://console.groq.com/keys")
 
@@ -58,11 +58,11 @@ def generar_recomendaciones(resumen_estadistico: str,
                 {"role": "user",
                  "content": f"Resumen estadístico del negocio:\n{resumen_estadistico}"},
             ],
-            temperature=0.4,   # bajo: queremos consistencia, no creatividad
+            temperature=0.4,
             max_tokens=900,
         )
         return respuesta.choices[0].message.content
     except ImportError:
-        return "⚠️ Falta instalar la librería `groq` (pip install groq)."
-    except Exception as exc:  # errores de red, key inválida, rate limit...
-        return f"⚠️ No pude obtener la recomendación de Groq: {exc}"
+        return "Falta instalar la librería `groq` (pip install groq)."
+    except Exception as exc:
+        return f"No pude obtener la recomendación de Groq: {exc}"

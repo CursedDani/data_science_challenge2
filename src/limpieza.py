@@ -21,12 +21,10 @@ import pandas as pd
 # Carpeta de datos por defecto (relativa a la raíz del proyecto)
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
-# Umbral razonable de edad humana para el feedback
 EDAD_MAXIMA = 100
 
-# Sentinelas conocidos detectados en el perfilado
-SENTINEL_TIEMPO_ENTREGA = 999
-SENTINEL_RATING = 99
+EXTREMO_TIEMPO_ENTREGA = 999
+EXTREMO_RATING = 99
 
 
 # ---------------------------------------------------------------------------
@@ -84,7 +82,6 @@ def calcular_health_score(df: pd.DataFrame, reglas_validez: dict | None = None,
     }
 
 
-# Reglas de validez por dataset: qué significa "un valor lógico" en negocio
 REGLAS_INVENTARIO = {
     "Stock_Actual": lambda s: s >= 0,
     "Costo_Unitario_USD": lambda s: (s >= 1) & (s <= 10_000),
@@ -93,7 +90,7 @@ REGLAS_INVENTARIO = {
 
 REGLAS_TRANSACCIONES = {
     "Cantidad_Vendida": lambda s: s > 0,
-    "Tiempo_Entrega_Real": lambda s: (s > 0) & (s < SENTINEL_TIEMPO_ENTREGA),
+    "Tiempo_Entrega_Real": lambda s: (s > 0) & (s < EXTREMO_TIEMPO_ENTREGA),
 }
 
 REGLAS_FEEDBACK = {
@@ -232,8 +229,8 @@ def limpiar_transacciones(df: pd.DataFrame) -> tuple[pd.DataFrame, list]:
                                  "registros y se excluyen del análisis comercial."})
 
     # 3. Tiempo de entrega 999: sentinel de 'sin dato', no un envío de 3 años
-    n_999 = int((df["Tiempo_Entrega_Real"] == SENTINEL_TIEMPO_ENTREGA).sum())
-    df.loc[df["Tiempo_Entrega_Real"] == SENTINEL_TIEMPO_ENTREGA, "Tiempo_Entrega_Real"] = np.nan
+    n_999 = int((df["Tiempo_Entrega_Real"] == EXTREMO_TIEMPO_ENTREGA).sum())
+    df.loc[df["Tiempo_Entrega_Real"] == EXTREMO_TIEMPO_ENTREGA, "Tiempo_Entrega_Real"] = np.nan
     df["Tiempo_Entrega_Real"] = df.groupby("Ciudad_Destino")["Tiempo_Entrega_Real"].transform(
         lambda s: s.fillna(s.median()))
     log.append({"accion": "Reemplazar tiempo de entrega 999 por mediana de su ciudad",
@@ -281,8 +278,8 @@ def limpiar_feedback(df: pd.DataFrame) -> tuple[pd.DataFrame, list]:
                                  "duplica su peso en NPS y ratings; se conserva el primero."})
 
     # 2. Rating 99: sentinel de 'sin calificación' en una escala 1-5
-    n_99 = int((df["Rating_Producto"] == SENTINEL_RATING).sum())
-    df.loc[df["Rating_Producto"] == SENTINEL_RATING, "Rating_Producto"] = np.nan
+    n_99 = int((df["Rating_Producto"] == EXTREMO_RATING).sum())
+    df.loc[df["Rating_Producto"] == EXTREMO_RATING, "Rating_Producto"] = np.nan
     moda = df["Rating_Producto"].mode()[0]
     df["Rating_Producto"] = df["Rating_Producto"].fillna(moda)
     log.append({"accion": f"Rating_Producto 99 imputado con la moda ({moda:.0f})", "filas": n_99,

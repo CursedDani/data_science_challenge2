@@ -9,12 +9,11 @@ de alta gerencia. main_app.py solo consume estas funciones y las grafica.
 import numpy as np
 import pandas as pd
 
-# Fecha de referencia para calcular antigüedades (cierre del periodo de datos)
 FECHA_REFERENCIA = pd.Timestamp("2026-02-28")
 
 
 # ---------------------------------------------------------------------------
-# Integración (Merge) y feature engineering
+# Integración (Merge)
 # ---------------------------------------------------------------------------
 def construir_fuente_verdad(inventario: pd.DataFrame,
                             transacciones: pd.DataFrame,
@@ -25,29 +24,27 @@ def construir_fuente_verdad(inventario: pd.DataFrame,
     Decisión sobre el SKU Fantasma: las ventas cuyo SKU no existe en el
     maestro NO se eliminan. Son ingresos reales que la empresa cobró; el
     problema es de catálogo, no de la venta. Se marcan con `Es_SKU_Fantasma`
-    para poder cuantificar su impacto (pregunta 3), pero quedan excluidas
+    para poder cuantificar su impacto, pero quedan excluidas
     del cálculo de margen porque sin costo unitario el margen sería inventado.
     """
-    # Ventas + maestro de productos (left join conserva las ventas fantasma)
     df = transacciones.merge(inventario, on="SKU_ID", how="left", indicator=True)
     df["Es_SKU_Fantasma"] = df["_merge"] == "left_only"
     df = df.drop(columns="_merge")
 
-    # + voz del cliente (no toda venta tiene feedback, por eso left join)
     df = df.merge(feedback, on="Transaccion_ID", how="left")
 
     # --- Variables derivadas -------------------------------------------------
-    # Ingreso bruto de la línea
+    # Ingreso bruto
     df["Ingreso_USD"] = df["Precio_Venta_Final"] * df["Cantidad_Vendida"]
 
-    # Margen de utilidad: solo calculable donde conocemos el costo real
+    # Margen de utilidad (tomando en cuenta casos con coston real)
     df["Margen_USD"] = np.where(
         df["Es_SKU_Fantasma"], np.nan,
         (df["Precio_Venta_Final"] - df["Costo_Unitario_USD"]) * df["Cantidad_Vendida"]
         - df["Costo_Envio"])
     df["Margen_Pct"] = (df["Margen_USD"] / df["Ingreso_USD"] * 100).round(2)
 
-    # Brecha de entrega: días reales vs. lead time prometido por el proveedor
+    # Brecha de entrega
     df["Brecha_Entrega_Dias"] = df["Tiempo_Entrega_Real"] - df["Lead_Time_Dias"]
 
     # Antigüedad del último conteo físico del stock
