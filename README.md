@@ -17,13 +17,21 @@ las 5 preguntas de alta gerencia con evidencia visual + recomendaciones de IA.
 ## Estructura
 
 ```
-techlogistics_dss/
-├── main_app.py          # App de Streamlit (solo presentación)
+challenge2/
+├── README.md
+├── main_app.py          # App de Streamlit (capa de presentación)
 ├── src/
 │   ├── limpieza.py      # Auditoría, health score y limpieza con bitácora
 │   ├── eda.py           # Merge, feature engineering y las 5 preguntas
 │   └── ia_groq.py       # Recomendaciones con Llama-3 vía Groq
-├── data/                # Los tres CSV crudos
+├── data/
+│   ├── inventario_central_v2.csv
+│   ├── transacciones_logistica_v2.csv
+│   └── feedback_clientes_v2.csv
+├── reports/
+│   ├── figuras/
+│   ├── informe_hallazgos.pdf
+│   └── informe_hallazgos.tex
 └── requirements.txt
 ```
 
