@@ -9,6 +9,7 @@ Ejecutar con:  streamlit run main_app.py
 
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 import streamlit as st
 
 from src import eda, ia_groq, limpieza
@@ -25,14 +26,25 @@ st.set_page_config(
 
 PALETA = px.colors.qualitative.Set2
 COLOR_MALO, COLOR_BUENO = "#e74c3c", "#2ecc71"
+pio.templates.default = "plotly_dark"
 
 st.markdown("""
     <style>
     .main-title { font-size: 2.1rem; font-weight: 700; color: #1a5276; margin-bottom: 0; }
     .subtitle   { color: #7f8c8d; margin-top: 0.2rem; }
     div[data-testid="stMetric"] {
-        background: #f8f9fa; border: 1px solid #e9ecef;
-        border-radius: 12px; padding: 12px 16px;
+        background: linear-gradient(135deg, rgba(26,82,118,0.16), rgba(52,152,219,0.10));
+        border: 1px solid rgba(26,82,118,0.32);
+        border-radius: 12px;
+        padding: 12px 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #1f77b4;
+        font-weight: 700;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricDelta"] {
+        color: #7f8c8d;
     }
     </style>
 """, unsafe_allow_html=True)
